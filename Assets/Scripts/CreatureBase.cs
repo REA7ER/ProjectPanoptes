@@ -14,16 +14,17 @@ public class CreatureBase : MonoBehaviour
     private BoxCollider awarenessBox;
     private float previousAwarenessLevel;
     public float HungerRate;
-    public float Hunger;
+    public float CreatureHunger;
     void Start()
     {
+        CreatureHunger = 
         awarenessBox = GetComponent<BoxCollider>();
         awarenessBox.center = transform.position;
         awarenessBox.size = new Vector3(awarenessLevel, awarenessLevel,awarenessLevel);
     }
     void Update()
     {
-        Hunger = lifesource.hunger
+        
     }
     void ModifyAwareness(float NewAwarenessLevel)
     {
