@@ -16,16 +16,24 @@ public class CreatureBase : MonoBehaviour
     public float HungerRate;
     public float CreatureHunger;
     public float FindFoodHunger;
-    private Vector3 moveVelocity;
+ 
+    private BoxCollider CreatureCollider;
+    public int eatRate;
+    private bool Collided = true;
     void Start()
     {
         // set creature hunger here
-        awarenessBox = GetComponent<BoxCollider>();
-        awarenessBox.center = transform.position;
+       
+        awarenessBox = GetComponentInChildren<BoxCollider>();
+        awarenessBox.center = new Vector3(0,transform.position.y,0);
+
         awarenessBox.size = new Vector3(awarenessLevel, awarenessLevel,awarenessLevel);
+        awarenessBox.isTrigger = true;
+        CreatureCollider = GetComponent<BoxCollider>();
     }
     void Update()
     {
+        
         CreatureHunger -= HungerRate * Time.deltaTime * time;
     }
     void ModifyAwareness(float NewAwarenessLevel)
@@ -35,17 +43,63 @@ public class CreatureBase : MonoBehaviour
     void OnTriggerStay(Collider other)
     {
         Collider[] colliders = Physics.OverlapBox(transform.position, awarenessBox.size);
- 
         for (int i = 0; i < colliders.Length; i++)
         {
             if (colliders[i].gameObject.tag == "Player"){
             }
-            if (colliders[i].gameObject.tag == "Food" && CreatureHunger < FindFoodHunger)
+            else if (colliders[i].gameObject.tag == "Food" && CreatureHunger < FindFoodHunger)
             {
                 Vector3 targetPosition = colliders[i].transform.position;
-                Vector3.SmoothDamp(transform.position, targetPosition, ref moveVelocity, 3);
+                MoveToPoint(targetPosition);  
+            }
+            else
+            {
+                CreatureBase othercreaturebase = colliders[i].GetComponent<CreatureBase>();
+                if (othercreaturebase)
+                {
+                    
+                    if (othercreaturebase.isAggressive | othercreaturebase.isHostile)
+                    {
+                        if (isAggressive | isHostile)
+                        {
+                            Vector3 targetPosition = colliders[i].transform.position;
+                            MoveToPoint(targetPosition);
+                        }
+                        else
+                        {
+                            Vector3 targetPosition = transform.position - colliders[i].transform.position;
+                            MoveToPoint(targetPosition);
+                        }
+                    }
+                }
             }
         }
     }
-  
+    void MoveToPoint(Vector3 pos)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, pos, movementSpeed * 0.005f);
+
+    }
+    void OnCollisionStay(Collision other)
+    {
+
+        
+        if (other.gameObject.tag == "Food" && CreatureHunger < FindFoodHunger && Collided)
+        {
+                StartCoroutine(Eat(eatRate, other.gameObject));
+        }
+        
+    }
+    
+    IEnumerator Eat(int EatingRate, GameObject FoodObject)
+    {
+        Collided = false;
+        FoodSourcce foodvariables = FoodObject.GetComponent<FoodSourcce>();
+        if (foodvariables.Remaining > 0){
+            foodvariables.Remaining -= EatingRate;
+            CreatureHunger += EatingRate;
+        }
+        yield return new WaitForSeconds(1);
+        Collided = true;
+    }
 }
