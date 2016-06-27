@@ -1,3 +1,17 @@
+Temp/*
+Library/*
+.vs
+*.userprefs
+*.TMP
+*.apk
+*.csproj
+*.asset
+*.sln
+backup/*
+*.sublime*
+
+#-----------------------------------------------
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
