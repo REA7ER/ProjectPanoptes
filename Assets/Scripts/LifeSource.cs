@@ -3,17 +3,17 @@ using System.Collections;
 
 public class LifeSource : MonoBehaviour {
 
-    float hp,
-          mp,
-          hunger;
+    public float hp,
+                 mp,
+                 hunger;
+    public bool  initated = false;
+    public int   currStatus;
+    public enum  status { normal = 1,
+                          poisoned = 2 };
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    void Update() {
+        if(initated) {
+            // do stuff
+        }
+    }
 }
