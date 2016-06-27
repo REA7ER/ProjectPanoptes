@@ -5,7 +5,9 @@ public class LifeSource : MonoBehaviour {
 
     public float hp,
                  mp,
-                 hunger;
+                 hunger,
+                 gravity,
+                 timeRatio;
     public bool  initated = false;
     public int   currStatus;
     public enum  status { normal = 1,
